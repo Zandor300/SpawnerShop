@@ -1,10 +1,13 @@
 package com.zandor300.spawnershop;
 
+import com.zandor300.spawnershop.listener.SignListener;
 import com.zandor300.zsutilities.config.Config;
 import com.zandor300.zsutilities.utilities.Chat;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
@@ -18,6 +21,7 @@ public class SpawnerShop extends JavaPlugin {
 	private static Chat chat = new Chat("SpawnerShop");
 	private static SpawnerShop plugin;
 	private static Config config;
+	private static Economy economy = null;
 
 	public static Chat getChat() {
 		return chat;
@@ -29,6 +33,10 @@ public class SpawnerShop extends JavaPlugin {
 
 	public static Config getCustomConfig() {
 		return config;
+	}
+
+	public static Economy getEconomy() {
+		return economy;
 	}
 
 	@Override
@@ -47,8 +55,14 @@ public class SpawnerShop extends JavaPlugin {
 			chat.sendConsoleMessage("Couldn't submit stats to MCStats.org...");
 		}
 
-		chat.sendConsoleMessage("Registering events...");
+		chat.sendConsoleMessage("Setting up vault...");
+		RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+		if (economyProvider != null)
+			economy = economyProvider.getProvider();
+		chat.sendConsoleMessage("Vault setup.");
 
+		chat.sendConsoleMessage("Registering events...");
+		pm.registerEvents(new SignListener(), this);
 		chat.sendConsoleMessage("Registered events.");
 
 		chat.sendConsoleMessage("Registering commands...");

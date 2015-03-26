@@ -14,6 +14,10 @@
             <id>MavenPi</id>
             <url>http://play.zsinfo.nl/maven</url>
         </repository>
+        <repository>
+            <id>vault-repo</id>
+            <url>http://nexus.theyeticave.net/content/repositories/pub_releases</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -34,6 +38,12 @@
             <artifactId>ZSUtilities</artifactId>
             <type>jar</type>
             <version>1.8-1.0.4.7</version>
+        </dependency>
+        <dependency>
+            <groupId>net.milkbowl.vault</groupId>
+            <artifactId>Vault</artifactId>
+            <type>jar</type>
+            <version>1.5.4</version>
         </dependency>
     </dependencies>
 

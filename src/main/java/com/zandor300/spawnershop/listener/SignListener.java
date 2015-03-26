@@ -5,6 +5,7 @@ import com.zandor300.zsutilities.utilities.string.StringUtilities;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.CreatureSpawner;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -13,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Created by Zandor on 3/26/15.
@@ -82,6 +84,15 @@ public class SignListener implements Listener {
 			return;
 		}
 
-
+		try {
+			ItemStack item = new ItemStack(Material.MOB_SPAWNER);
+			CreatureSpawner spawner = (CreatureSpawner) item;
+			spawner.setSpawnedType(type);
+			player.getInventory().addItem((ItemStack) spawner);
+		} catch(Exception e) {
+			SpawnerShop.getChat().sendMessage(player, "Invalid mobtype " + type.getName());
+			return;
+		}
+		SpawnerShop.getEconomy().withdrawPlayer(player, money);
 	}
 }
