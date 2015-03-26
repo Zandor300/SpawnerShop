@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.zandor300</groupId>
+    <artifactId>SpawnerShop</artifactId>
+    <version>1.8-1.0.0</version>
+    <name>SpawnerShop</name>
+
+    <repositories>
+        <repository>
+            <id>MavenPi</id>
+            <url>http://play.zsinfo.nl/maven</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>bukkit</artifactId>
+            <type>jar</type>
+            <version>1.8-R0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.bukkit</groupId>
+            <artifactId>craftbukkit</artifactId>
+            <type>jar</type>
+            <version>1.8-R0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.zandor300</groupId>
+            <artifactId>ZSUtilities</artifactId>
+            <type>jar</type>
+            <version>1.8-1.0.4.7</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ftp</artifactId>
+                <version>1.0-alpha-6</version>
+            </extension>
+        </extensions>
+    </build>
+
+    <distributionManagement>
+        <repository>
+            <id>MavenPi-FTP</id>
+            <url>ftp://192.168.1.18/var/www/maven</url>
+        </repository>
+    </distributionManagement>
+
+
+</project>
