@@ -1,6 +1,7 @@
 package com.zandor300.spawnershop.listener;
 
 import com.zandor300.spawnershop.SpawnerShop;
+import com.zandor300.spawnershop.handlers.BuyHandler;
 import com.zandor300.zsutilities.utilities.string.StringUtilities;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -87,22 +88,13 @@ public class SignListener implements Listener {
 			return;
 		}
 
-		try {
-			for(int i = 0; i < amount; i++) {
-				ItemStack item = new ItemStack(Material.MOB_SPAWNER, 1, type.getTypeId());
-				ItemMeta meta = item.getItemMeta();
-				meta.setDisplayName(ChatColor.WHITE + type.getName() + " Spawner");
-				meta.setLore(Arrays.asList(type.getName()));
-				item.setItemMeta(meta);
-				player.getInventory().addItem(item);
-			}
-			player.updateInventory();
-		} catch(Exception e) {
-			e.printStackTrace();
-			SpawnerShop.getChat().sendMessage(player, "Invalid mobtype " + type.getName());
+		if(!player.hasPermission("spawnershop.sign")) {
+			SpawnerShop.getChat().sendMessage(player, ChatColor.RED +
+					"You don't have permission to buy spawners from signs.");
 			return;
 		}
-		//SpawnerShop.getEconomy().withdrawPlayer(player, money);
+
+		BuyHandler.buy(player, type, amount, money);
 		SpawnerShop.getChat().sendMessage(player, "Bought " + amount + " " + type.getName() + " spawner for $" + money + ".");
 	}
 
