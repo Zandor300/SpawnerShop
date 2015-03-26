@@ -12,9 +12,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.Arrays;
 
 /**
  * Created by Zandor on 3/26/15.
@@ -30,20 +34,19 @@ public class SignListener implements Listener {
 
 	@EventHandler
 	public void onSignCreation(SignChangeEvent event) {
-		Sign sign = null;
-		try {
-			sign = (Sign) event.getBlock();
-		} catch(Exception e) {
-			return;
-		}
+		System.out.println("1");
 
-		if(!sign.getLine(0).toLowerCase().contains("[spawner]"))
+		if(!event.getLine(0).toLowerCase().contains("[spawner]"))
 			return;
 
-		sign.setLine(0, ChatColor.DARK_AQUA + "[Spawner]");
-		sign.setLine(1, ChatColor.GREEN + sign.getLine(1));
-		sign.setLine(2, ChatColor.RED + sign.getLine(2));
-		sign.setLine(3, "$" + sign.getLine(3));
+		System.out.println("3");
+
+		event.setLine(0, ChatColor.DARK_AQUA + "[Spawner]");
+		event.setLine(1, ChatColor.GREEN + event.getLine(1));
+		event.setLine(2, ChatColor.RED + event.getLine(2));
+		event.setLine(3, "$" + event.getLine(3));
+
+		System.out.println("4");
 	}
 
 	@EventHandler
@@ -57,20 +60,20 @@ public class SignListener implements Listener {
 				&& !block.getType().equals(Material.WALL_SIGN))
 			return;
 
-		Sign sign = (Sign) block;
+		Sign sign = (Sign) block.getState();
 		if(!sign.getLine(0).toLowerCase().contains("[spawner]"))
 			return;
 
 		int amount = 0;
 		try {
-			Integer.valueOf(sign.getLine(1));
+			amount = Integer.valueOf(sign.getLine(1).replaceAll(ChatColor.GREEN + "", ""));
 		} catch(Exception e) {
-			SpawnerShop.getChat().sendMessage(player, "Invalid amount " + sign.getLine(1));
+			SpawnerShop.getChat().sendMessage(player, "Invalid amount " + StringUtilities.removeChatColors(sign.getLine(1)));
 			return;
 		}
 
-		EntityType type = EntityType.valueOf(StringUtilities.removeChatColors(
-				sign.getLine(2)).replaceAll(" ", "_").toUpperCase());
+		EntityType type = EntityType.valueOf(
+				sign.getLine(2).replaceAll(ChatColor.RED + "", "").replaceAll(" ", "_").toUpperCase());
 		if(type == null) {
 			SpawnerShop.getChat().sendMessage(player, "Invalid mobtype " + sign.getLine(2));
 			return;
@@ -78,21 +81,47 @@ public class SignListener implements Listener {
 
 		int money = 0;
 		try {
-			money = Integer.valueOf(sign.getLine(3).replaceAll("$", ""));
+			money = Integer.valueOf(sign.getLine(3).replaceAll("\\$", ""));
 		} catch(Exception e) {
 			SpawnerShop.getChat().sendMessage(player, "Invalid money " + sign.getLine(3));
 			return;
 		}
 
 		try {
-			ItemStack item = new ItemStack(Material.MOB_SPAWNER);
-			CreatureSpawner spawner = (CreatureSpawner) item;
-			spawner.setSpawnedType(type);
-			player.getInventory().addItem((ItemStack) spawner);
+			for(int i = 0; i < amount; i++) {
+				ItemStack item = new ItemStack(Material.MOB_SPAWNER, 1, type.getTypeId());
+				ItemMeta meta = item.getItemMeta();
+				meta.setDisplayName(ChatColor.WHITE + type.getName() + " Spawner");
+				meta.setLore(Arrays.asList(type.getName()));
+				item.setItemMeta(meta);
+				player.getInventory().addItem(item);
+			}
+			player.updateInventory();
 		} catch(Exception e) {
+			e.printStackTrace();
 			SpawnerShop.getChat().sendMessage(player, "Invalid mobtype " + type.getName());
 			return;
 		}
-		SpawnerShop.getEconomy().withdrawPlayer(player, money);
+		//SpawnerShop.getEconomy().withdrawPlayer(player, money);
+		SpawnerShop.getChat().sendMessage(player, "Bought " + amount + " " + type.getName() + " spawner for $" + money + ".");
+	}
+
+	@EventHandler
+	public void onBlockPlace(BlockPlaceEvent event) {
+		if(!event.getBlock().getType().equals(Material.MOB_SPAWNER))
+			return;
+
+		if(event.getPlayer().getItemInHand().getItemMeta().getLore().size() <= 0)
+			return;
+
+		EntityType type;
+		try {
+			type = EntityType.valueOf(event.getPlayer().getItemInHand().getItemMeta().getLore().get(0).toUpperCase());
+		} catch(Exception e) {
+			return;
+		}
+
+		CreatureSpawner spawner = (CreatureSpawner) event.getBlock().getState();
+		spawner.setSpawnedType(type);
 	}
 }

@@ -44,7 +44,7 @@ public class SpawnerShop extends JavaPlugin {
 		chat.sendConsoleMessage("Setting things up...");
 
 		plugin = this;
-		config = new Config(this, "config.yml", true);
+		//config = new Config(this, "config.yml", true);
 		PluginManager pm = Bukkit.getPluginManager();
 
 		chat.sendConsoleMessage("Starting metrics...");
