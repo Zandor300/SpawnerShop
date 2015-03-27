@@ -1,5 +1,6 @@
 package com.zandor300.spawnershop.commands;
 
+import com.zandor300.spawnershop.SpawnerShop;
 import com.zandor300.zsutilities.commandsystem.Command;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -9,7 +10,10 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.SpawnEgg;
+
+import java.util.Arrays;
 
 /**
  * Created by Zandor on 3/27/15.
@@ -32,7 +36,13 @@ public class SpawnerCommand extends Command {
 			try {
 				SpawnEgg egg = new SpawnEgg();
 				egg.setSpawnedType(type);
-				inventory.setItem(i, new ItemStack(Material.MONSTER_EGG, 1, egg.getData()));
+				ItemStack item = new ItemStack(Material.MONSTER_EGG, 1, egg.getData());
+				ItemMeta meta = item.getItemMeta();
+				meta.setDisplayName(ChatColor.WHITE + egg.getSpawnedType().getName() + " spawnegg");
+				int price = SpawnerShop.getCustomConfig().getInt("price." + egg.getSpawnedType().getName().toLowerCase());
+				meta.setLore(Arrays.asList(ChatColor.GREEN + "Price: $" + price));
+				item.setItemMeta(meta);
+				inventory.setItem(i, item);
 				i++;
 			} catch(Exception e) {}
 		}
