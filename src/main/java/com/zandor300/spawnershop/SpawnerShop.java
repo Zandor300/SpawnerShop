@@ -1,6 +1,8 @@
 package com.zandor300.spawnershop;
 
+import com.zandor300.spawnershop.commands.SpawnerCommand;
 import com.zandor300.spawnershop.commands.SpawnerShopCommand;
+import com.zandor300.spawnershop.listener.PlayerListener;
 import com.zandor300.spawnershop.listener.SignListener;
 import com.zandor300.zsutilities.commandsystem.CommandManager;
 import com.zandor300.zsutilities.config.Config;
@@ -46,7 +48,7 @@ public class SpawnerShop extends JavaPlugin {
 		chat.sendConsoleMessage("Setting things up...");
 
 		plugin = this;
-		//config = new Config(this, "config.yml", true);
+		config = new Config(this, "config.yml", true);
 		PluginManager pm = Bukkit.getPluginManager();
 		CommandManager cm = new CommandManager();
 
@@ -65,10 +67,12 @@ public class SpawnerShop extends JavaPlugin {
 		chat.sendConsoleMessage("Vault setup.");
 
 		chat.sendConsoleMessage("Registering events...");
+		pm.registerEvents(new PlayerListener(), this);
 		pm.registerEvents(new SignListener(), this);
 		chat.sendConsoleMessage("Registered events.");
 
 		chat.sendConsoleMessage("Registering commands...");
+		cm.registerCommand(new SpawnerCommand(), this);
 		cm.registerCommand(new SpawnerShopCommand(), this);
 		chat.sendConsoleMessage("Registered commands.");
 
