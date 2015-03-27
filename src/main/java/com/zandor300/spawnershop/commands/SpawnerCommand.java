@@ -30,6 +30,11 @@ public class SpawnerCommand extends Command {
 			return;
 		Player player = (Player) sender;
 
+		if(!player.hasPermission("spawnershop.gui")) {
+			SpawnerShop.getChat().sendMessage(player, ChatColor.RED + "You don't have permission to buy from the GUI.");
+			return;
+		}
+
 		Inventory inventory = Bukkit.createInventory(null, 54, ChatColor.DARK_AQUA + "Spawner Shop");
 		int i = 0;
 		for(EntityType type : EntityType.values()) {
