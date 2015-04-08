@@ -7,6 +7,7 @@ import com.zandor300.spawnershop.listener.SignListener;
 import com.zandor300.zsutilities.commandsystem.CommandManager;
 import com.zandor300.zsutilities.config.Config;
 import com.zandor300.zsutilities.utilities.Chat;
+import com.zandor300.zsutilities.ZSUtilities;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -51,6 +52,8 @@ public class SpawnerShop extends JavaPlugin {
 		config = new Config(this, "config.yml", true);
 		PluginManager pm = Bukkit.getPluginManager();
 		CommandManager cm = new CommandManager();
+
+		ZSUtilities.addDependency(this);
 
 		chat.sendConsoleMessage("Starting metrics...");
 		try {
